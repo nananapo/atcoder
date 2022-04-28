@@ -18,7 +18,6 @@ void	put_answer(int N, int n)
 	printf("%s\n", str);
 }
 
-
 int	main(void)
 {
 	int	N;
@@ -41,9 +40,8 @@ int	main(void)
 			else
 				popcount++;
 			if (popcount < 0)
-				break;
+				break ;
 		}
-		//printf("%d , %d\n", n, popcount);
 		if (popcount == 0)
 			put_answer(N, n);
 	}
