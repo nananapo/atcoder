@@ -1,16 +1,15 @@
 #include <stdio.h>
 #include <stdbool.h>
-
-#define ll long long
+#define LL long long
 
 static int	g_N;
-static ll	g_L;
+static LL	g_L;
 static int	g_K;
-static ll	g_A[100003];
+static LL	g_A[100003];
 
-bool	can_cut(ll n)
+bool	can_cut(LL n)
 {
-	ll	before;
+	LL	before;
 	int	count;
 	int	i;
 
@@ -30,9 +29,9 @@ bool	can_cut(ll n)
 	return (false);
 }
 
-int	binary_search(ll left, ll length)
+int	binary_search(LL left, LL length)
 {
-	ll	mid;
+	LL	mid;
 
 	while (length > 1)
 	{
