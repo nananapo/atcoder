@@ -5,7 +5,7 @@ static int	g_N;
 static int	g_K;
 static int	g_X;
 
-#define ll long long
+#define LL long long
 
 int	cmp(const void *a, const void *b)
 {
@@ -17,9 +17,9 @@ int	cmp(const void *a, const void *b)
 	return (x - y);
 }
 
-ll	sum(int	*list, int size)
+LL	sum(int	*list, int size)
 {
-	ll	s;
+	LL	s;
 
 	s = 0;
 	while (size-- > 0)
@@ -50,5 +50,5 @@ int	main(void)
 	i = g_N;
 	while (i-- > 0 && g_K-- > 0)
 		A[i] = 0;
-	printf("%lld\n", sum(A, g_N));
+	printf("%LLd\n", sum(A, g_N));
 }

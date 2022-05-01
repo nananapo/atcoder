@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#define ll long long
+#define LL long long
 
-int	ctz(ll n)
+int	ctz(LL n)
 {
 	int	result;
 
@@ -10,27 +10,27 @@ int	ctz(ll n)
 	while (n != 0 && n % 2 == 0)
 	{
 		result++;
-		n/=2;
+		n /= 2;
 	}
 	return (result);
 }
 
-ll	pow2(int pow)
+LL	pow2(int pow)
 {
-	ll	result;
+	LL	result;
 
 	result = 1;
 	while (pow-- > 0)
 		result *= 2;
-	return result;
+	return (result);
 }
 
 int	main(void)
 {
 	int	N;
-	ll	now;
+	LL	now;
 	int	T;
-	ll	mask;
+	LL	mask;
 
 	scanf("%d", &N);
 	now = 0;
@@ -42,5 +42,5 @@ int	main(void)
 		if (ctz(now) != T)
 			now += mask;
 	}
-	printf("%lld", now);
+	printf("%LLd", now);
 }
