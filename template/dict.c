@@ -1,7 +1,5 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 
 typedef int	(*t_hash)(const void *);
 typedef int	(*t_cmp)(const void *, const void *);
