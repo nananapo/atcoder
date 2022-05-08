@@ -1,8 +1,7 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
 #include <string.h>
-#include <stdio.h>
 
 typedef int	(*t_hash)(const void *);
 typedef int	(*t_cmp)(const void *, const void *);
@@ -20,7 +19,6 @@ typedef struct s_dict
 	t_dict_elem	**ptr;
 	t_hash		hash;
 	t_cmp		keycmp;
-	int			len;
 }	t_dict;
 
 // bucket_size	: 辞書のサイズ bsize > 0
@@ -35,7 +33,6 @@ t_dict	*dict_create(int bucket_size, t_hash hash_func, t_cmp keycmp)
 	dict->hash = hash_func;
 	dict->keycmp = keycmp;
 	dict->ptr = (t_dict_elem **)calloc(bucket_size, sizeof(t_dict_elem *));
-	dict->len = 0;
 	return (dict);
 }
 
@@ -89,7 +86,6 @@ void	dict_set(t_dict *dict, void *key, void *value)
 	tmp->ptr = value;
 	tmp->next = dict->ptr[keyhash % dict->bsize];
 	dict->ptr[keyhash % dict->bsize] = tmp;
-	dict->len++;
 }
 
 // 辞書からキーのデータを削除する
@@ -106,9 +102,7 @@ void	dict_del(t_dict *dict, void *key)
 		return ;
 	if (dict->keycmp(tmp->id, key) == 0)
 	{
-		free(tmp);
 		dict->ptr[keyhash % dict->bsize] = tmp->next;
-		dict->len--;
 		return ;
 	}
 	while (tmp->next != NULL)
@@ -116,7 +110,6 @@ void	dict_del(t_dict *dict, void *key)
 		if (dict->keycmp(tmp->next->id, key) == 0)
 		{
 			tmp->next = tmp->next->next;
-			dict->len--;
 			free(tmp->next);
 			return ;
 		}
@@ -124,33 +117,10 @@ void	dict_del(t_dict *dict, void *key)
 	}
 }
 
+#define N_MAX 202000000
 
-
-
-
-
-int	myhash(const void *key)
-{
-	char	*s;
-	int		len;
-	int		i;
-	int		hash;
-
-	s = (char *)key;
-	len = (int) strlen(s);
-	i = -1;
-	hash = len * s[0] * s[len - 1];
-	while (++i < len)
-		hash += (s[i] % 53) * (s[len - i - 1] % 49);
-	if (hash < 0)
-		hash = - (hash + 1);
-	return (hash);
-}
-
-int	mycmp(const void *a, const void *b)
-{
-	return (strcmp((char *)a, (char *)b));
-}
+static int	g_N;
+static char	g_S[N_MAX];
 
 typedef struct s_pair
 {
@@ -168,24 +138,48 @@ t_pair	*create_pair(int fst, int snd)
 	return (pair);
 }
 
-int	main(void)
+int	myhash(const void *key)
 {
-	t_dict	*dict;
-	void	*res;
-	bool	find;
+	char	*s;
+	int		len;
+	int		i;
+	int		hash;
 
-	dict = dict_create(1000, myhash, mycmp);
-	dict_set(dict, "a", create_pair(0, 100));
-	dict_set(dict, "b", create_pair(0, 200));
-	find = dict_get(dict, "a", &res);
-	printf("%d\n", ((t_pair *)res)->snd);
-	find = dict_get(dict, "b", &res);
-	printf("%d\n", ((t_pair *)res)->snd);
-	dict_del(dict, "b");
-	find = dict_get(dict, "a", &res);
-	printf("%d\n", find);
-	dict_set(dict, "abc", create_pair(0, 123));
-	find = dict_get(dict, "abc", &res);
-	printf("%d\n", ((t_pair *)res)->snd);
+	s = (char *)key;
+	len = (int) strlen(s);
+	i = -1;
+	hash = len * s[0] * s[len - 1];
+	while (++i < len)
+		hash += (s[i] % 53) * (s[len - i - 1] % 49);
+	return (hash);
 }
 
+int	mycmp(const void *a, const void *b)
+{
+	return (strcmp((char *)a, (char *)b));
+}
+
+int	main(void)
+{
+	int		i;
+	t_dict	*dict;
+	void	*dummy;
+	int		result;
+	char	*key;
+
+	scanf("%d%*c", &g_N);
+	i = -1;
+	result = 0;
+	dict = dict_create(100000, myhash, mycmp);
+	while (++i < g_N)
+	{
+		scanf("%[^\n]%*c", g_S);
+		key = strdup(g_S);
+		if (!dict_get(dict, key, &dummy))
+		{
+			result++;
+			dict_set(dict, key, dummy);
+		}
+	}
+	printf("%d\n", result);
+}

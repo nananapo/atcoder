@@ -1,8 +1,6 @@
-#include <stdlib.h>
-#include <stdbool.h>
-
-#include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 typedef int	(*t_hash)(const void *);
 typedef int	(*t_cmp)(const void *, const void *);
@@ -124,68 +122,142 @@ void	dict_del(t_dict *dict, void *key)
 	}
 }
 
-
-
-
-
-
-int	myhash(const void *key)
-{
-	char	*s;
-	int		len;
-	int		i;
-	int		hash;
-
-	s = (char *)key;
-	len = (int) strlen(s);
-	i = -1;
-	hash = len * s[0] * s[len - 1];
-	while (++i < len)
-		hash += (s[i] % 53) * (s[len - i - 1] % 49);
-	if (hash < 0)
-		hash = - (hash + 1);
-	return (hash);
-}
-
-int	mycmp(const void *a, const void *b)
-{
-	return (strcmp((char *)a, (char *)b));
-}
-
 typedef struct s_pair
 {
 	int	fst;
 	int	snd;
 }	t_pair;
 
-t_pair	*create_pair(int fst, int snd)
+t_pair	*create_pair(int a, int b)
 {
-	t_pair	*pair;
+	t_pair	*tmp;
 
-	pair = (t_pair *)malloc(sizeof(t_pair));
-	pair->fst = fst;
-	pair->snd = snd;
-	return (pair);
+	tmp = (t_pair *)malloc(sizeof(t_pair));
+	tmp->fst = a;
+	tmp->snd = b;
+	return (tmp);
+}
+
+int	cmp(const void *a, const void *b)
+{
+	t_pair	*p1;
+	t_pair	*p2;
+
+	p1 = (t_pair *)a;
+	p2 = (t_pair *)b;
+	if (p1->fst == p2->fst && p1->snd == p2->snd)
+		return (0);
+	return (1);
+}
+
+int	myhash(const void *a)
+{
+	t_pair	*p;
+	int		hash;
+
+	p = (t_pair *)a;
+	hash = ((p->fst + 127) * 255) * ((p->snd - 127) + 255);
+	if (hash < 0)
+		hash = - (hash + 1);
+	return (hash);
+}
+
+#define N_MAX 502
+
+static int		g_N;
+static int		g_X[N_MAX];
+static int		g_Y[N_MAX];
+static t_dict	*g_dict;
+
+int	abs(int a)
+{
+	if (a < 0)
+		return (-a);
+	return (a);
+}
+
+int	max(int a, int b)
+{
+	if (a > b)
+		return (a);
+	return (b);
+}
+
+int	min(int a, int b)
+{
+	if (a > b)
+		return (b);
+	return (a);
+}
+
+int	gcd(int a, int b)
+{
+	int	tmp;
+
+	a = abs(a);
+	b = abs(b);
+	tmp = a;
+	a = max(a, b);
+	b = min(tmp, b);
+	while (a % b != 0)
+	{
+		tmp = a;
+		a = b;
+		b = tmp % b;
+	}
+	return (b);
+}
+
+void	add_zeromagic(int x, int y)
+{
+	t_pair	*tmp;
+
+	x = max(-1, min(1, x));
+	y = max(-1, min(1, y));
+	tmp = create_pair(x, y);
+	dict_set(g_dict, tmp, tmp);
+}
+
+void	add_magic(int fx, int fy, int tx, int ty)
+{
+	int		dx;
+	int		dy;
+	int		g;
+	t_pair	*tmp;
+
+	dx = tx - fx;
+	dy = ty - fy;
+	if (dx == 0 || dy == 0)
+	{
+		add_zeromagic(dx, dy);
+		return ;
+	}
+	g = gcd(dx, dy);
+	dx /= g;
+	dy /= g;
+	tmp = create_pair(dx, dy);
+	dict_set(g_dict, tmp, &dx);
 }
 
 int	main(void)
 {
-	t_dict	*dict;
-	void	*res;
-	bool	find;
+	int	i;
+	int	j;
 
-	dict = dict_create(1000, myhash, mycmp);
-	dict_set(dict, "a", create_pair(0, 100));
-	dict_set(dict, "b", create_pair(0, 200));
-	find = dict_get(dict, "a", &res);
-	printf("%d\n", ((t_pair *)res)->snd);
-	find = dict_get(dict, "b", &res);
-	printf("%d\n", ((t_pair *)res)->snd);
-	dict_del(dict, "b");
-	find = dict_get(dict, "a", &res);
-	printf("%d\n", find);
-	dict_set(dict, "abc", create_pair(0, 123));
-	find = dict_get(dict, "abc", &res);
-	printf("%d\n", ((t_pair *)res)->snd);
+	scanf("%d", &g_N);
+	i = -1;
+	while (++i < g_N)
+		scanf("%d %d", g_X + i, g_Y + i);
+	g_dict = dict_create(100000, myhash, cmp);
+	i = -1;
+	while (++i < g_N - 1)
+	{
+		j = i;
+		while (++j < g_N)
+		{
+			add_magic(g_X[i], g_Y[i], g_X[j], g_Y[j]);
+			add_magic(g_X[j], g_Y[j], g_X[i], g_Y[i]);
+		}
+	}
+	printf("%d\n", g_dict->len);
 }
-
