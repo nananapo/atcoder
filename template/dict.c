@@ -124,10 +124,13 @@ void	dict_del(t_dict *dict, void *key)
 	}
 }
 
+// 辞書にキーが存在するか確認する
+bool	dict_exists(t_dict *dict, void *key)
+{
+	void	*ptr;
 
-
-
-
+	return (dict_get(dict, key, &ptr));
+}
 
 int	myhash(const void *key)
 {
@@ -188,4 +191,3 @@ int	main(void)
 	find = dict_get(dict, "abc", &res);
 	printf("%d\n", ((t_pair *)res)->snd);
 }
-
