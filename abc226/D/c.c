@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-typedef int	(*t_hash)(const void *);
-typedef int	(*t_cmp)(const void *, const void *);
+typedef int		(*t_hash)(const void *);
+typedef int		(*t_cmp)(const void *, const void *);
 
 typedef struct s_dict_elem
 {

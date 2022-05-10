@@ -4,7 +4,7 @@
 
 #define LL long long
 
-typedef int	(*t_cmp)(const void *, const void *);
+typedef int		(*t_cmp)(const void *, const void *);
 
 typedef struct s_heap
 {
@@ -103,16 +103,16 @@ t_pair	*create_pair(int fst, LL snd)
 	return (p);
 }
 
-static int	g_N;
-static int	g_M;
+static int		g_N;
+static int		g_M;
 
 static t_road	*g_R[N_MAX];
 
-static LL	g_cost1[N_MAX];
-static LL	g_costN[N_MAX];
+static LL		g_cost1[N_MAX];
+static LL		g_costN[N_MAX];
 
-static bool	g_decided1[N_MAX];
-static bool	g_decidedN[N_MAX];
+static bool		g_decided1[N_MAX];
+static bool		g_decidedN[N_MAX];
 
 static t_heap	*g_queue;
 
