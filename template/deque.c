@@ -22,14 +22,8 @@ t_queue	*queue_new(int size)
 	return (tmp);
 }
 
-void	enqueue(t_queue *queue, void *value)
+void	enqueue_tail(t_queue *queue, void *value)
 {
-	if (queue->head == queue->tail + 1
-		|| (queue->tail == queue->max_size - 1 && queue->head == 0))
-	{
-		fprintf(stderr, "overflow");
-		return ;
-	}
 	queue->values[queue->tail] = value;
 	if (queue->tail == queue->max_size - 1)
 		queue->tail = 0;
@@ -37,19 +31,35 @@ void	enqueue(t_queue *queue, void *value)
 		queue->tail++;
 }
 
-void	*dequeue(t_queue *queue)
+void	enqueue_head(t_queue *queue, void *value)
+{
+	if (queue->head == 0)
+		queue->head = queue->max_size - 1;
+	else
+		queue->head--;
+	queue->values[queue->head] = value;
+}
+
+void	*dequeue_head(t_queue *queue)
 {
 	void	*ret;
 
-	if (queue->head == queue->tail)
-	{
-		fprintf(stderr, "underflow");
-		return (NULL);
-	}
 	ret = queue->values[queue->head];
 	if (queue->head == queue->max_size - 1)
 		queue->head = 0;
 	else
 		queue->head++;
+	return (ret);
+}
+
+void	*dequeue_tail(t_queue *queue)
+{
+	void	*ret;
+
+	ret = queue->values[queue->tail];
+	if (queue->tail == 0)
+		queue->tail = queue->max_size - 1;
+	else
+		queue->tail--;
 	return (ret);
 }
