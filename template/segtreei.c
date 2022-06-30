@@ -52,8 +52,8 @@ static int	segtree_get_rec(t_segtree *t, int l, int r, int p, int pl, int pr)
 		return (segtree_get_rec(t, l, r, (p + 1) * 2 - 1, pl, mid));
 	if (mid <= l)
 		return (segtree_get_rec(t, l, r, (p + 1) * 2, mid, pr));
-	return (segtree_get_rec(t, l, mid, (p + 1) * 2 - 1, pl, mid)
-		+ segtree_get_rec(t, mid, r, (p + 1) * 2, mid, pr));
+	return (t->op(segtree_get_rec(t, l, mid, (p + 1) * 2 - 1, pl, mid)
+		, segtree_get_rec(t, mid, r, (p + 1) * 2, mid, pr)));
 }
 
 // l : include
