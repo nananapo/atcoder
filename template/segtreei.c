@@ -35,7 +35,8 @@ t_segtree	*segtree_create(int size, int *init, segop op, int zero)
 	i = -1;
 	while (++i < size)
 		t->A[i + t->size - 1] = init[i];
-	while (i++ < t->size)
+	i--;
+	while (++i < t->size)
 		t->A[i + t->size - 1] = zero;
 	segtree_init_rec(t, 0);
 	return (t);
